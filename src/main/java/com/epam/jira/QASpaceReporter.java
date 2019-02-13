@@ -15,7 +15,7 @@ public class QASpaceReporter implements EventListener {
 
     private Issue issue = null;
     private List<Issue> issues = new ArrayList<>();
-
+    private List<String> summaryList;
 
     @Override
     public void setEventPublisher(EventPublisher publisher) {
@@ -25,11 +25,14 @@ public class QASpaceReporter implements EventListener {
     }
 
     private void handleStartOfTestCase(TestCaseStarted event) {
-        TestCase testCase = event.testCase;
         issue = new Issue();
+        summaryList = new ArrayList<>();
+        TestCase testCase = event.testCase;
+
         if (isJIRATestKeyPresent(testCase)) {
             issue.setIssueKey(getJIRAKey(testCase));
         }
+        summaryList.add("Test case: " + testCase.getName());
     }
 
     private boolean isJIRATestKeyPresent(TestCase testCase) {
@@ -41,7 +44,7 @@ public class QASpaceReporter implements EventListener {
     }
 
     private String durationToString(long duration) {
-        return String.valueOf(MINUTES.convert(duration, NANOSECONDS)) +
+        return MINUTES.convert(duration, NANOSECONDS) +
                 "m " +
                 SECONDS.convert(duration, NANOSECONDS) +
                 "." +
@@ -50,7 +53,7 @@ public class QASpaceReporter implements EventListener {
     }
 
     private EventHandler<TestCaseStarted> getTestCaseStartedHandler() {
-        return event -> handleStartOfTestCase(event);
+        return this::handleStartOfTestCase;
     }
 
     private EventHandler<TestCaseFinished> getTestCaseFinishedHandler() {
@@ -58,8 +61,18 @@ public class QASpaceReporter implements EventListener {
             issue.setStatus(event.result.getStatus().firstLetterCapitalizedName());
             issue.setTime(durationToString(event.result.getDuration()));
             if (event.result.getError() != null) {
-                issue.setSummary(event.result.getErrorMessage());
+                summaryList.add(event.result.getError().getLocalizedMessage());
+                summaryList.add(FileUtils.save(event.result.getError()));
+            } else {
+                summaryList.add("Scenario passed OK");
             }
+            if (!FileUtils.getFiles().isEmpty()) {
+                issue.setAttachments(FileUtils.getFiles());
+            }
+            if (!FileUtils.getParams().isEmpty()) {
+                issue.setParameters(FileUtils.getParams());
+            }
+            issue.setSummary(String.join("\n", summaryList));
             issues.add(issue);
         };
     }

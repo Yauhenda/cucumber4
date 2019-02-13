@@ -1,5 +1,7 @@
 package com.epam.jira.entity;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,8 +18,8 @@ public class Parameter {
     }
 
     public Parameter(String title, String value) {
-        this.title = title;
-        this.value = value;
+        setTitle(title);
+        setValue(value);
     }
 
     public String getTitle() {
@@ -25,7 +27,7 @@ public class Parameter {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = StringEscapeUtils.escapeJson(title);
     }
 
     public String getValue() {
@@ -33,7 +35,7 @@ public class Parameter {
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.value = StringEscapeUtils.escapeJson(value);
     }
 
 }

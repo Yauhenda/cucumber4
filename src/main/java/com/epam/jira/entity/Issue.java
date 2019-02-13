@@ -1,7 +1,10 @@
 package com.epam.jira.entity;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import javax.xml.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @XmlRootElement(name = "test")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -28,14 +31,14 @@ public class Issue {
     private List<Parameter> parameters;
 
     public Issue(String issueKey, TestResult status) {
-        this.issueKey = issueKey;
-        this.status = status.toString();
+       setIssueKey(issueKey);
+       setStatus(status.toString());
     }
 
     public Issue(String issueKey, TestResult status, String time) {
-        this.issueKey = issueKey;
-        this.status = status.toString();
-        this.time = time;
+        setIssueKey(issueKey);
+        setStatus(status.toString());
+        setTime(time);
     }
 
     public Issue() {
@@ -46,7 +49,7 @@ public class Issue {
     }
 
     public void setIssueKey(String issueKey) {
-        this.issueKey = issueKey;
+        this.issueKey = StringEscapeUtils.escapeJson(issueKey);
     }
 
     public String getStatus() {
@@ -54,7 +57,7 @@ public class Issue {
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        this.status = StringEscapeUtils.escapeJson(status);
     }
 
     public String getSummary() {
@@ -62,7 +65,7 @@ public class Issue {
     }
 
     public void setSummary(String summary) {
-        this.summary = summary;
+        this.summary = StringEscapeUtils.escapeJson(summary);
     }
 
     public List<Parameter> getParameters() {
@@ -78,7 +81,7 @@ public class Issue {
     }
 
     public void setAttachments(List<String> attachments) {
-        this.attachments = attachments;
+        this.attachments = attachments.stream().map(StringEscapeUtils::escapeJson).collect(Collectors.toList());
     }
 
     public String getTime() {

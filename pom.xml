@@ -4,7 +4,7 @@
 
     <groupId>com.epam.jira</groupId>
     <artifactId>cucumber4</artifactId>
-    <version>0.1</version>
+    <version>0.3</version>
     <packaging>jar</packaging>
 
     <name>QASpace Test Management Annotation</name>
@@ -27,6 +27,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -78,7 +83,7 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.1</version>
                 <configuration>
-                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo
+                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo2
                     </altDeploymentRepository>
                 </configuration>
             </plugin>
@@ -90,8 +95,8 @@
                 <configuration>
                     <message>Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
-                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-                    <branch>refs/heads/mvn-repo</branch>
+                    <outputDirectory>${project.build.directory}/mvn-repo2</outputDirectory>
+                    <branch>refs/heads/mvn-repo2</branch>
                     <includes>
                         <include>**/*</include>
                     </includes>

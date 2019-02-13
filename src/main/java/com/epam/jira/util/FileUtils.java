@@ -2,6 +2,7 @@ package com.epam.jira.util;
 
 import com.epam.jira.entity.Issue;
 import com.epam.jira.entity.Issues;
+import com.epam.jira.entity.Parameter;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.xml.bind.JAXBContext;
@@ -17,14 +18,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 /**
  * FileUtils is a util class which provides useful methods for file writing.
  */
 public class FileUtils {
 
-    private final static String TARGET_DIR = "\\target\\";
-    private final static String ATTACHMENTS_DIR = TARGET_DIR + "attachments\\";
+    private static final String TARGET_DIR = "\\target\\";
+    private static final String ATTACHMENTS_DIR = TARGET_DIR + "attachments\\";
+
+    private static List<String> files = new ArrayList<>();
+    private static List<Parameter> params = new ArrayList<>();
+
+
+    private FileUtils() {
+    }
 
     public static String save(Throwable throwable) {
         String message = null;
@@ -49,9 +56,9 @@ public class FileUtils {
     private static void writeStackTrace(Throwable throwable, String filePath) {
         try {
             File temp = File.createTempFile("stacktrace", ".tmp");
-            BufferedWriter out = new BufferedWriter(new FileWriter(temp));
-            out.write(ExceptionUtils.getStackTrace(throwable));
-            out.close();
+            try (BufferedWriter out = new BufferedWriter(new FileWriter(temp))) {
+                out.write(ExceptionUtils.getStackTrace(throwable));
+            }
             saveFile(temp, filePath);
             temp.delete();
         } catch (IOException e) {
@@ -69,7 +76,7 @@ public class FileUtils {
      * @param newFilePath the path relative to attachments dir
      * @return the path where file was actually saved
      */
-    public static String saveFile(File file, String newFilePath) {
+    private static String saveFile(File file, String newFilePath) {
         try {
             String relativeFilePath = ATTACHMENTS_DIR;
             File copy = new File("." + relativeFilePath + newFilePath);
@@ -128,11 +135,51 @@ public class FileUtils {
         }
     }
 
-    static String getTargetDir() {
+    private static String getTargetDir() {
         return TARGET_DIR;
     }
 
     public static String getAttachmentsDir() {
         return ATTACHMENTS_DIR;
+    }
+
+    public static void saveFile(File file) {
+
+        if (!file.exists() || !file.isFile()) return;
+        // Copy to target if it's real file
+        String currentDir = System.getProperty("user.dir");
+        String targetFilePath = null;
+        // Get relative file path if file placed in target directory or copy it there
+        try {
+            String filePath = file.getCanonicalPath();
+            boolean placedOutOfTargetDir = !filePath.startsWith(currentDir + FileUtils.getTargetDir());
+            targetFilePath = placedOutOfTargetDir
+                    ? saveFile(file, file.getName())
+                    : filePath.replaceFirst(currentDir, "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        files.add(targetFilePath);
+    }
+
+    public static void saveValue(String title, Object value) {
+        Parameter parameter = new Parameter(title, value != null ? value.toString() : "null");
+        params.add(parameter);
+    }
+
+    public static List<String> getFiles() {
+        return files;
+    }
+
+    public static void setFiles(List<String> files) {
+        FileUtils.files = files;
+    }
+
+    public static List<Parameter> getParams() {
+        return params;
+    }
+
+    public static void setParams(List<Parameter> params) {
+        FileUtils.params = params;
     }
 }
