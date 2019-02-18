@@ -4,7 +4,7 @@
 
     <groupId>com.epam.jira</groupId>
     <artifactId>cucumber4</artifactId>
-    <version>0.1</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <name>QASpace Test Management Annotation</name>
@@ -16,22 +16,23 @@
         <github.global.server>github</github.global.server>
         <github.maven-plugin>0.12</github.maven-plugin>
     </properties>
+    <repositories>
+        <repository>
+            <id>adapter-jira-core-mvn-repo</id>
+            <url>https://raw.github.com/Yauhenda/adapter-java-core/mvn-repo</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
     <dependencies>
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>1.3.2</version>
+            <groupId>com.epam.jira</groupId>
+            <artifactId>adapter-java-core</artifactId>
+            <version>1.8</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
