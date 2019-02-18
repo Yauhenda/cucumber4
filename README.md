@@ -17,6 +17,17 @@ in your Runner add QASpaceReporter as a plugin
 public class TestRunner {
 ```
 
+Mark scenario with proper JIRA key
+
+```java
+Feature: YouTube video check
+
+@JIRATestKey(EPMRDBY-912)
+  Scenario: Failed check Epam title on main youtube page
+    Given I am on page with url 'https://www.youtube.com/'
+    Then I should see 'EPAM Systems Global' in list video
+```
+
 ## Adding a attachment file
 To add a screenshot or any other attachment after scenario call embed method.
 ```java
