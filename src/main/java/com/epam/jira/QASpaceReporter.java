@@ -66,22 +66,26 @@ public class QASpaceReporter implements EventListener {
     }
 
     private void handleEmbedEvent(EmbedEvent event) {
-        try {
-            String filePath = String.format("attachment_%s.%s", LocalDateTime.now().toString().replace(":", "-"), MIME_TYPES_EXTENSIONS.get(event.mimeType));
-            Files.write(Paths.get(filePath), event.data);
-            sendTempFileProcessor(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (listenedTest) {
+            try {
+                String filePath = String.format("attachment_%s.%s", LocalDateTime.now().toString().replace(":", "-"), MIME_TYPES_EXTENSIONS.get(event.mimeType));
+                Files.write(Paths.get(filePath), event.data);
+                sendTempFileProcessor(filePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void handleWriteEvent(WriteEvent event) {
-        try {
-            String filePath = String.format("attachment_%s.txt", LocalDateTime.now().toString().replace(":", "-"));
-            Files.write(Paths.get(filePath), StringEscapeUtils.escapeJson(event.text).getBytes());
-            sendTempFileProcessor(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (listenedTest) {
+            try {
+                String filePath = String.format("attachment_%s.txt", LocalDateTime.now().toString().replace(":", "-"));
+                Files.write(Paths.get(filePath), StringEscapeUtils.escapeJson(event.text).getBytes());
+                sendTempFileProcessor(filePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
