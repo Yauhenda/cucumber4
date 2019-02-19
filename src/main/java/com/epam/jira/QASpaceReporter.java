@@ -3,6 +3,7 @@ package com.epam.jira;
 import com.epam.jira.core.TestResultProcessor;
 import cucumber.api.TestCase;
 import cucumber.api.event.*;
+import org.apache.commons.text.StringEscapeUtils;
 
 
 import java.io.File;
@@ -77,7 +78,7 @@ public class QASpaceReporter implements EventListener {
     private void handleWriteEvent(WriteEvent event) {
         try {
             String filePath = String.format("attachment_%s.txt", LocalDateTime.now().toString().replace(":", "-"));
-            Files.write(Paths.get(filePath), event.text.getBytes());
+            Files.write(Paths.get(filePath), StringEscapeUtils.escapeJson(event.text).getBytes());
             sendTempFileProcessor(filePath);
         } catch (IOException e) {
             e.printStackTrace();
